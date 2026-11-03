@@ -274,7 +274,7 @@ pre{white-space:pre-wrap;background:var(--sf2);padding:10px 12px;border-radius:1
 const LEVEL = 2;                                  // change for other level pages
 const CONFIG = { url: "https://ce.judge0.com", lang: 50, token: "", cooldown: 3 };   // same code runner as the sample that worked
 const TIME_LIMIT_MIN = 35;                         // countdown in minutes. At 0 the quiz finishes and later runs are practice only.
-const ALLOW_PASTE = true;                         // true = paste allowed (for testing). Set to false before giving this to students.
+const ALLOW_PASTE = false;                         // true = paste allowed (for testing). Set to false before giving this to students.
 const STARTER = "#include <stdio.h>\n\nint main() {\n    // start writing your code here\n\n    return 0;\n}\n";
 const range = (a, b, s = 1) => { const r = []; for (let i = a; s > 0 ? i <= b : i >= b; i += s) r.push(String(i)); return r; };
 /* ===== QUESTIONS (expected = list of answer tokens; stdin = test input) ===== */
