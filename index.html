@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mini Coding Olympiad: Level 2</title>
+<style>
+:root{
+ --bg:#f3f6f4;--sf:#ffffff;--sf2:#f8faf9;--ink:#0f1f17;--mu:#5b6b62;--ln:#e0e8e3;
+ --gr:#16a34a;--gr2:#15803d;--gi:#ffffff;--or:#f59e0b;
+ --pb:#dcfce7;--pk:#166534;--fb:#fff1e0;--fk:#9a4a07;
+ --ed:#0e1612;--edk:#d9e8de;--edl:#1f2c25;
+ --sh:0 1px 2px rgba(15,31,23,.05),0 8px 24px -8px rgba(15,31,23,.12);
+ --r:16px;color-scheme:light}
+@media(prefers-color-scheme:dark){:root{
+ --bg:#0a110d;--sf:#131d17;--sf2:#0f1712;--ink:#e8f1ea;--mu:#93a699;--ln:#223028;
+ --gr:#22c55e;--gr2:#16a34a;--gi:#04130a;--or:#fbbf24;
+ --pb:#12331f;--pk:#86efac;--fb:#382410;--fk:#fbbf7a;
+ --ed:#0a100c;--edk:#d9e8de;--edl:#18231c;
+ --sh:0 1px 2px rgba(0,0,0,.4),0 10px 30px -10px rgba(0,0,0,.6);color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;
+ background:radial-gradient(900px 420px at 10% -10%,color-mix(in srgb,var(--gr) 14%,transparent),transparent 70%),radial-gradient(700px 380px at 100% 0,color-mix(in srgb,var(--or) 10%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--or) 80%,transparent);outline-offset:2px}
+code{font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:.9em;background:color-mix(in srgb,var(--gr) 12%,transparent);padding:1px 6px;border-radius:6px}
+.nosel{user-select:none;-webkit-user-select:none}
+
+/* header */
+header{position:relative;display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;align-items:center;padding:16px 28px 18px;color:#fff;
+ background:linear-gradient(120deg,#0f5132 0%,#15803d 55%,#22a455 100%);box-shadow:0 6px 24px -10px rgba(21,128,61,.6)}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);font:700 1.05rem ui-monospace,Consolas,monospace;letter-spacing:-.5px}
+header h1{margin:0;font-size:1.3rem;letter-spacing:-.01em;line-height:1.2}
+header small{opacity:.85;font-size:.88rem}
+.pts{text-align:right;font-weight:800;font-size:1.5rem;line-height:1;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:9px 16px;border-radius:14px;backdrop-filter:blur(6px)}
+.pts small{display:block;font-size:.76rem;font-weight:500;margin-top:5px;opacity:.9}
+.hright{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
+.clock{text-align:center;line-height:1;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);padding:9px 16px;border-radius:14px;backdrop-filter:blur(6px);transition:background .4s,border-color .4s}
+.clock small{display:block;font-size:.76rem;font-weight:500;margin-bottom:6px;opacity:.9}
+.clock b{font-size:1.5rem;font-weight:800;font-variant-numeric:tabular-nums}
+.clock.warn{background:rgba(251,191,36,.32);border-color:#fde68a}
+.clock.crit{background:rgba(239,68,68,.55);border-color:#fecaca;animation:tpulse 1s ease-in-out infinite}
+.clock.done{background:rgba(0,0,0,.22)}
+@keyframes tpulse{50%{transform:scale(1.06)}}
+.practice{display:none;margin-bottom:16px;padding:12px 16px;border-radius:14px;background:var(--fb);border-left:4px solid var(--or);animation:rise .4s ease both}
+.practice.on{display:block}
+.pts.bump{animation:bump .7s cubic-bezier(.3,1.6,.5,1)}
+.prog{position:absolute;left:0;right:0;bottom:0;height:4px;background:rgba(255,255,255,.18)}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#fde68a,#fff);border-radius:0 4px 4px 0;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+
+/* cards, forms */
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:var(--r);box-shadow:var(--sh)}
+.center{max-width:460px;margin:7vh auto;padding:30px;animation:rise .5s ease both}
+.center h2{margin:0 0 4px;font-size:1.5rem;letter-spacing:-.01em}.center p{color:var(--mu);margin:0 0 14px}
+label{display:block;font-size:.85rem;font-weight:600;color:var(--mu);margin:14px 0 6px}
+input[type=text],input[type=number]{width:100%;padding:12px 14px;border:1.5px solid var(--ln);border-radius:12px;background:var(--sf2);transition:border-color .15s,box-shadow .15s}
+input:focus{outline:none;border-color:var(--gr);box-shadow:0 0 0 4px color-mix(in srgb,var(--gr) 22%,transparent)}
+input[readonly]{opacity:.7}
+.btn{border:1.5px solid var(--gr);background:linear-gradient(180deg,var(--gr),var(--gr2));color:var(--gi);padding:10px 20px;border-radius:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px -4px color-mix(in srgb,var(--gr) 70%,transparent);transition:transform .12s,box-shadow .15s,filter .15s}
+.btn:hover:not(:disabled){transform:translateY(-1px);filter:brightness(1.06)}
+.btn:active:not(:disabled){transform:translateY(1px) scale(.98)}
+.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+.btn.g{background:var(--sf);color:var(--ink);border-color:var(--ln);box-shadow:none;font-weight:600}
+.btn.g:hover:not(:disabled){border-color:var(--gr);filter:none}
+#startBtn{width:100%;margin-top:6px;padding:12px}
+.err{color:var(--fk);min-height:1.4em;margin:8px 0 0;font-size:.92rem}
+
+#resume .btn{width:100%}#resume .btn.g{margin-top:10px}
+
+/* app */
+#app{display:none;padding:20px 28px 48px;max-width:1500px;margin:0 auto;animation:rise .45s ease both}
+.bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin-bottom:18px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{position:relative;width:42px;height:42px;border:1.5px solid var(--ln);background:var(--sf);border-radius:12px;cursor:pointer;font-weight:700;transition:transform .15s,border-color .15s,background .2s}
+.chip:hover{transform:translateY(-2px);border-color:var(--gr)}
+.chip.on{border-color:var(--or);box-shadow:0 0 0 3px color-mix(in srgb,var(--or) 25%,transparent)}
+.chip.ok{background:var(--pb);color:var(--pk);border-color:color-mix(in srgb,var(--gr) 55%,transparent)}
+.chip.ok::after{content:"";position:absolute;right:-5px;top:-5px;width:16px;height:16px;border-radius:50%;background:var(--gr) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat}
+.chip.pop{animation:pop .6s cubic-bezier(.3,1.7,.5,1)}
+.meta{color:var(--mu);font-size:.93rem}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat{background:var(--sf);border:1px solid var(--ln);border-radius:999px;padding:5px 14px;font-size:.88rem;color:var(--mu)}
+.stat strong{color:var(--ink);font-variant-numeric:tabular-nums}
+.nav{display:flex;gap:8px;flex-wrap:wrap}.nav .btn{padding:8px 16px}
+.grid{display:grid;grid-template-columns:minmax(260px,420px) minmax(0,1fr);gap:20px;align-items:start}
+@media(max-width:900px){.grid{grid-template-columns:1fr}header{padding:14px 18px 16px}#app{padding:16px 14px 40px}}
+.left{position:sticky;top:16px;display:flex;flex-direction:column;gap:16px}
+.q{padding:24px}
+@media(max-width:900px){.left{position:static}}
+.q h2{margin:0 0 6px;font-size:1.35rem;letter-spacing:-.01em}
+.q p{margin:0 0 14px}
+.q p.meta{display:inline-block;background:color-mix(in srgb,var(--or) 18%,transparent);color:var(--fk);font-weight:700;font-size:.8rem;padding:3px 12px;border-radius:999px;margin-bottom:14px}
+@media(prefers-color-scheme:dark){.q p.meta{color:var(--or)}}
+#qx{font-size:1.05rem;line-height:1.65}
+.hint{border-left:4px solid var(--or);background:var(--sf2);padding:10px 14px;border-radius:0 12px 12px 0;font-size:.9rem;color:var(--mu)}
+
+/* brain break loop */
+.loop{overflow:hidden}
+.lh{display:flex;justify-content:space-between;align-items:center;padding:10px 14px}
+.lh .btn{padding:5px 12px;border-radius:10px;font-size:.85rem}
+.lv{display:flex;justify-content:center;background:#05090600;padding:0 14px 14px}
+.lv img{display:block;max-width:100%;max-height:min(46vh,380px);width:auto;height:auto;border-radius:12px;background:#0b130e}
+.loop.off .lv{display:none}
+
+/* editor */
+.editor{overflow:hidden;background:var(--ed);border-color:var(--edl)}
+.eh{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 14px;background:var(--edl);color:var(--edk);flex-wrap:wrap}
+.eh .ttl{display:flex;align-items:center;gap:10px;font-weight:600;font-size:.92rem}
+.dots{display:flex;gap:6px}.dots i{width:11px;height:11px;border-radius:50%;background:#ff5f57}.dots i:nth-child(2){background:#febc2e}.dots i:nth-child(3){background:#28c840}
+.lang{font:600 .72rem ui-monospace,Consolas,monospace;background:rgba(255,255,255,.1);padding:2px 8px;border-radius:6px}
+.eh .btn.g{background:transparent;color:var(--edk);border-color:rgba(255,255,255,.18)}
+.eh .btn{padding:7px 14px;border-radius:10px}
+textarea{display:block;width:100%;height:46vh;min-height:280px;border:0;padding:16px 18px;background:var(--ed);color:var(--edk);caret-color:var(--gr);
+ font:15px/1.65 ui-monospace,"SF Mono","JetBrains Mono",Consolas,monospace;tab-size:4;resize:vertical}
+textarea:focus{outline:none;box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--gr) 55%,transparent)}
+
+/* results */
+.res{padding:18px 20px;margin-top:20px;position:relative;overflow:hidden}
+.res h3{margin:0 0 10px;font-size:1.05rem}
+.res.win{border-color:var(--gr);animation:glow 1.4s ease-out}
+.res.win::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,color-mix(in srgb,var(--gr) 28%,transparent) 50%,transparent 70%);transform:translateX(-120%);animation:sheen 1.1s .1s ease-out forwards;pointer-events:none}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--ln);font-size:.9rem}th{color:var(--mu);font-weight:600}
+tr:last-child td{border-bottom:0}
+td{vertical-align:top}
+pre.out{margin:0;padding:8px 10px;max-height:240px;overflow:auto;line-height:1.5}
+td.m,pre{font-family:ui-monospace,Consolas,monospace;font-size:.86rem}
+pre{white-space:pre-wrap;background:var(--sf2);padding:10px 12px;border-radius:10px;margin:8px 0 0;border:1px solid var(--ln)}
+.b{padding:2px 11px;border-radius:99px;font-weight:700;font-size:.8rem}
+.b.p{background:var(--pb);color:var(--pk)}.b.f{background:var(--fb);color:var(--fk)}
+.box{background:var(--fb);color:var(--ink);border-left:4px solid var(--or);padding:10px 14px;border-radius:0 12px 12px 0;margin-bottom:8px}
+.win-banner{display:flex;align-items:center;gap:14px;background:linear-gradient(120deg,var(--pb),color-mix(in srgb,var(--pb) 50%,var(--sf)));color:var(--pk);border:1px solid color-mix(in srgb,var(--gr) 40%,transparent);padding:12px 16px;border-radius:14px;margin-bottom:14px;animation:rise .4s ease both}
+.win-banner strong{display:block;font-size:1.05rem}.win-banner span{font-size:.88rem;opacity:.85}
+.tick{width:38px;height:38px;flex:none}
+.tick-c{fill:var(--gr);stroke:none;transform-origin:center;animation:pop .55s cubic-bezier(.3,1.7,.5,1) both}
+.tick-p{fill:none;stroke:#fff;stroke-width:4.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;animation:draw .45s .25s ease-out forwards}
+
+/* toast + confetti */
+.toast{position:fixed;left:50%;top:18px;z-index:80;display:flex;align-items:center;gap:10px;background:var(--gr);color:var(--gi);padding:10px 20px 10px 12px;border-radius:999px;font-weight:700;box-shadow:0 14px 34px -10px rgba(22,163,74,.7);transform:translate(-50%,-140%);opacity:0;pointer-events:none;transition:transform .45s cubic-bezier(.3,1.5,.5,1),opacity .3s}
+.toast.show{transform:translate(-50%,0);opacity:1}
+.toast .tick{width:28px;height:28px}.toast .tick-c{fill:rgba(255,255,255,.95)}.toast .tick-p{stroke:var(--gr2)}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:90;overflow:hidden}
+#fx i{position:absolute;width:9px;height:14px;border-radius:2px;opacity:0;animation:burst 1.2s cubic-bezier(.15,.7,.3,1) forwards}
+
+/* overlays */
+.ov{position:fixed;inset:0;background:rgba(6,12,8,.82);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.ov .card{max-width:480px;padding:28px;text-align:center;animation:rise .35s ease both}.ov h2{margin:0 0 8px}
+.ov .card .btn+.btn,.ov .card .btn.g{margin-right:6px}
+
+/* result popup */
+.ov .sumcard{max-width:440px;width:100%;padding:0;overflow:hidden;text-align:center;animation:sumin .6s cubic-bezier(.2,1.2,.4,1) both}
+.sum-top{position:relative;padding:30px 24px 26px;color:#fff;overflow:hidden;
+ background:radial-gradient(260px 160px at 85% -10%,rgba(253,230,138,.35),transparent 70%),linear-gradient(135deg,#0f5132 0%,#15803d 60%,#22a455 100%)}
+.sum-top::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.22) 50%,transparent 65%);transform:translateX(-130%);animation:sheen 1.6s .5s ease-out forwards;pointer-events:none}
+.trophy{width:76px;height:76px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.35);box-shadow:0 0 0 8px rgba(255,255,255,.08);animation:pop .7s .15s cubic-bezier(.3,1.7,.5,1) both}
+.trophy svg{width:46px;height:46px}
+.sum-badge{display:none;margin-bottom:8px;font-size:.72rem;font-weight:800;letter-spacing:.14em;padding:4px 12px;border-radius:999px;color:#5b3a00;background:linear-gradient(120deg,#fde68a,#fbbf24)}
+.perfect .sum-badge{display:inline-block;animation:rise .5s .35s ease both}
+.sum-top h2{margin:0;font-size:1.7rem;letter-spacing:-.02em}
+.sum-sub{margin:6px 0 14px;opacity:.9;font-size:.98rem}
+.sum-who{display:inline-block;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.28);padding:4px 14px;border-radius:999px;font-weight:600;font-size:.88rem}
+.sum-body{padding:0 24px 24px}
+.ring{position:relative;width:150px;height:150px;margin:-22px auto 14px;border-radius:50%;background:var(--sf);box-shadow:var(--sh);z-index:1}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:10;stroke-linecap:round}
+.ring-bg{stroke:var(--ln)}
+.ring-fg{stroke-dasharray:326.73;stroke-dashoffset:326.73;transition:stroke-dashoffset 1.3s cubic-bezier(.2,.8,.2,1) .3s}
+.ring-n{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.ring-n b{font-size:2.6rem;font-variant-numeric:tabular-nums;letter-spacing:-.03em}
+.ring-n span{font-size:.8rem;color:var(--mu);margin-top:4px;font-weight:600}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.tile{background:var(--sf2);border:1px solid var(--ln);border-radius:14px;padding:12px 10px;animation:rise .5s ease both}
+.tile:nth-child(1){animation-delay:.5s}.tile:nth-child(2){animation-delay:.6s}.tile:nth-child(3){animation-delay:.7s}.tile:nth-child(4){animation-delay:.8s}
+.tile small{display:block;color:var(--mu);font-size:.75rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.tile b{display:block;font-size:1.35rem;margin-top:2px;font-variant-numeric:tabular-nums}
+.sum-note{margin:0 0 16px;color:var(--mu);font-size:.9rem}
+.sum-act{display:flex;gap:10px;justify-content:center}.sum-act .btn{flex:1}
+#sumFx{position:fixed;inset:0;pointer-events:none;z-index:120;overflow:hidden}
+#sumFx i{position:absolute;width:9px;height:14px;border-radius:2px;opacity:0;animation:burst 1.5s cubic-bezier(.15,.7,.3,1) forwards}
+@keyframes sumin{from{opacity:0;transform:translateY(30px) scale(.92)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.18)}100%{transform:scale(1)}}
+@keyframes bump{0%{transform:scale(1)}35%{transform:scale(1.18) rotate(-2deg)}100%{transform:scale(1)}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes sheen{to{transform:translateX(120%)}}
+@keyframes glow{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--gr) 55%,transparent)}100%{box-shadow:0 0 0 18px transparent}}
+@keyframes burst{0%{opacity:1;transform:translate(0,0) rotate(0) scale(1)}70%{opacity:1}100%{opacity:0;transform:translate(var(--dx),calc(var(--dy) + 120px)) rotate(var(--rot)) scale(.7)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body oncontextmenu="return false">
+
+<header>
+  <div class="brand"><div class="logo" aria-hidden="true">{ }</div><div><h1>Mini Coding Olympiad: Level 2</h1><small>Computer Programming 1, C language</small></div></div>
+  <div class="hright"><div class="clock" id="clockBox" style="visibility:hidden"><small id="clockLbl">Time left</small><b id="clock">35:00</b></div><div class="pts" id="ptsBox" style="visibility:hidden"><span id="pts">0</span> / <span id="ptsMax">10</span><small id="who"></small></div></div>
+  <div class="prog" aria-hidden="true"><i id="prog"></i></div>
+</header>
+
+<section id="start" class="center card">
+  <h2>Before you start</h2>
+  <p>Fill in your details, then press Start. The quiz opens in full screen.</p>
+  <label for="ln">Last name</label><input id="ln" type="text" maxlength="40" autocomplete="off">
+  <label for="gp">Group number</label><input id="gp" type="number" min="1" max="99" inputmode="numeric">
+  <label for="lv">Level</label><input id="lv" type="text" value="Level 2" readonly>
+  <p class="err" id="startErr" role="alert"></p>
+  <button class="btn" id="startBtn" type="button">Start</button>
+</section>
+
+<section id="resume" class="center card" style="display:none">
+  <h2>Welcome back</h2>
+  <p id="resumeP"></p>
+  <p>Your progress was saved in this browser.</p>
+  <button class="btn" id="resumeBtn" type="button">Resume quiz</button>
+  <button class="btn g" id="notMe" type="button">Not me</button>
+</section>
+
+<main id="app">
+  <div class="bar">
+    <div class="chips" id="chips"></div>
+    <div class="stats meta">
+      <span class="stat">Time <strong id="tm">0:00</strong></span>
+      <span class="stat">Runs <strong id="rn">0</strong></span>
+      <span class="stat">Warnings <strong id="wn">0</strong></span>
+    </div>
+    <div class="nav"><button class="btn g" id="prev" type="button">Previous</button> <button class="btn g" id="next" type="button">Next question</button> <button class="btn g" id="fin" type="button">Finish</button></div>
+  </div>
+  <div class="practice" id="practice">Time is up and your score is locked. You can keep coding and running tests for practice, but new answers will not add points.</div>
+  <div class="grid">
+    <div class="left"><article class="card q nosel"><h2 id="qt"></h2><p class="meta" id="qm"></p><p id="qx"></p><p class="hint" id="qh"></p></article>
+      <div class="card loop nosel" id="loopBox">
+        <div class="lh"><strong>Brain break</strong><button class="btn g" id="loopTg" type="button">Hide</button></div>
+        <div class="lv"><img id="loopImg" src="subway.gif" alt="" draggable="false"></div>
+      </div></div>
+    <div>
+      <div class="card editor">
+        <div class="eh"><span class="ttl"><span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>Your code <span class="lang">C</span></span><span><button class="btn g" id="reset" type="button">Reset code</button> <button class="btn" id="run" type="button">Run tests</button></span></div>
+        <textarea id="code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="C code"></textarea>
+      </div>
+      <div class="card res" id="res" aria-live="polite"><h3>Results</h3><p class="meta">Press Run tests (or Ctrl+Enter).</p></div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="fx" aria-hidden="true"></div>
+
+<div class="ov" id="ov"><div class="card"><h2 id="ovT"></h2><p id="ovP"></p><button class="btn" id="ovB" type="button">Return to the quiz</button></div></div>
+<div class="ov" id="sum" role="dialog" aria-modal="true" aria-labelledby="sumT">
+  <div class="card sumcard" id="sumCard">
+    <div class="sum-top">
+      <div class="trophy" aria-hidden="true"><svg viewBox="0 0 64 64"><path d="M20 10h24v14a12 12 0 0 1-24 0z" fill="#fde68a"/><path d="M20 15h-8c0 9 4 14 10 15M44 15h8c0 9-4 14-10 15" fill="none" stroke="#fde68a" stroke-width="3.5" stroke-linecap="round"/><rect x="29" y="36" width="6" height="10" fill="#fcd34d"/><rect x="21" y="46" width="22" height="8" rx="2.5" fill="#fbbf24"/><path d="M27 15v8" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/></svg></div>
+      <span class="sum-badge" id="sumBadge">PERFECT SCORE</span>
+      <h2 id="sumT">Your result</h2>
+      <p class="sum-sub" id="sumSub"></p>
+      <span class="sum-who" id="sumWho"></span>
+    </div>
+    <div class="sum-body">
+      <div class="ring">
+        <svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#22c55e"/><stop offset="1" stop-color="#fbbf24"/></linearGradient></defs><circle class="ring-bg" cx="60" cy="60" r="52"/><circle class="ring-fg" id="ringFg" cx="60" cy="60" r="52" stroke="url(#rg)"/></svg>
+        <div class="ring-n"><b id="ringN">0</b><span id="ringMax"></span></div>
+      </div>
+      <div class="tiles" id="sumTiles"></div>
+      <p class="sum-note" id="sumNote">Show this screen to your teacher.</p>
+      <div class="sum-act"><button class="btn g" id="copy" type="button">Copy result</button><button class="btn" id="sumX" type="button">Close</button></div>
+    </div>
+  </div>
+</div>
+<div id="sumFx" aria-hidden="true"></div>
+
+<script>
+/* ===== SETTINGS ===== */
+const LEVEL = 2;                                  // change for other level pages
+const CONFIG = { url: "https://ce.judge0.com", lang: 50, token: "", cooldown: 3 };   // same code runner as the sample that worked
+const TIME_LIMIT_MIN = 35;                         // countdown in minutes. At 0 the quiz finishes and later runs are practice only.
+const ALLOW_PASTE = true;                         // true = paste allowed (for testing). Set to false before giving this to students.
+const STARTER = "#include <stdio.h>\n\nint main() {\n    // start writing your code here\n\n    return 0;\n}\n";
+const range = (a, b, s = 1) => { const r = []; for (let i = a; s > 0 ? i <= b : i >= b; i += s) r.push(String(i)); return r; };
+/* ===== QUESTIONS (expected = list of answer tokens; stdin = test input) ===== */
+const QUESTIONS = [
+ { id: "L2Q1", title: "Question 1", text: "Print the sum of all numbers from 1 to 100.", words: [], fn: null,
+   tests: [{ stdin: "", expected: ["5050"], alt: [["1", "100", "5050"]] }] },
+ { id: "L2Q2", title: "Question 2", text: "Print all numbers from 1 to 50 that are divisible by 5.", words: [], fn: null,
+   tests: [{ stdin: "", expected: range(5, 50, 5) }] },
+ { id: "L2Q3", title: "Question 3", text: "Ask the user for a number. Print \"Even\" if it is even, \"Odd\" if it is odd.",
+   words: ["Even", "Odd"], fn: null,
+   tests: [{ stdin: "8\n", expected: ["even"] }, { stdin: "7\n", expected: ["odd"] }, { stdin: "0\n", expected: ["even"] }] },
+ { id: "L2Q4", title: "Question 4", text: "Print the multiplication table of 7 from 7 x 1 to 7 x 10. Print one line per row, for example: 7 x 1 = 7", words: [], fn: null,
+   tests: [{ stdin: "", expected: [].concat(...range(1, 10).map((i) => ["7", i, String(7 * i)])) }] },
+ { id: "L2Q5", title: "Question 5", text: "Write a function max(int a, int b) that returns the larger of the two numbers. In main, print the result for 12 and 19.", words: [], fn: "max",
+   tests: [{ stdin: "", expected: ["19"], alt: [["12", "19", "19"]] }] }
+];
+const MAXPTS = QUESTIONS.length * LEVEL;
+
+/* ===== HELPERS ===== */
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fmt = (s) => Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+const store = { get: (k) => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} } };
+let S = null, shown = false, cur = 0, running = false, finished = false, overlayOn = false, cooling = false, lastCopied = null, key = "";
+const fsOK = !!document.documentElement.requestFullscreen;
+
+function tokens(out, words) {
+  const w = words.map((x) => x.toLowerCase());
+  return (out.match(/-?\d+|[A-Za-z]+/g) || []).filter((t) => /^-?\d/.test(t) || w.includes(t.toLowerCase())).map((t) => (/^-?\d/.test(t) ? t : t.toLowerCase()));
+}
+const hasFn = (src, name) => new RegExp("\\b(int|void|long|float|double|char)\\s+" + name + "\\s*\\([^)]*\\)\\s*\\{").test(src);
+
+/* ===== START ===== */
+$("startBtn").addEventListener("click", async () => {
+  const name = $("ln").value.trim(), g = parseInt($("gp").value, 10);
+  if (name.length < 2) return ($("startErr").textContent = "Enter your last name.");
+  if (!(g >= 1 && g <= 99)) return ($("startErr").textContent = "Enter your group number (1 to 99).");
+  key = "olympiad:L" + LEVEL + ":" + name.toLowerCase() + ":" + g;
+  store.set("olympiad:last:L" + LEVEL, JSON.stringify({ name, group: g }));
+  let saved = null; try { saved = JSON.parse(store.get(key)); } catch (e) {}
+  S = saved || { name, group: g, q: {}, warnings: 0, started: new Date().toISOString() };
+  QUESTIONS.forEach((q) => { S.q[q.id] = S.q[q.id] || { code: STARTER, attempts: 0, secs: 0, solved: false }; });
+  if (!S.deadline) S.deadline = Date.now() + TIME_LIMIT_MIN * 60000;
+  $("start").style.display = "none"; $("app").style.display = "block"; $("ptsBox").style.visibility = "visible"; $("clockBox").style.visibility = "visible";
+  $("who").textContent = S.name + ", Group " + S.group;
+  running = true;
+  if (fsOK) { try { await document.documentElement.requestFullscreen(); } catch (e) {} }
+  show(S.cur >= 0 && S.cur < QUESTIONS.length ? S.cur : 0); updatePts(); tickClock();
+});
+
+/* ===== QUESTIONS UI ===== */
+function points() { return QUESTIONS.filter((q) => S.q[q.id].solved).length * LEVEL; }
+function updatePts() { $("pts").textContent = points(); $("ptsMax").textContent = MAXPTS; $("wn").textContent = S.warnings; $("prog").style.width = (points() / MAXPTS * 100) + "%"; save(); }
+function save() { if (S) store.set(key, JSON.stringify(S)); }
+function show(i) {
+  if (shown) S.q[QUESTIONS[cur].id].code = $("code").value;
+  shown = true; cur = i; S.cur = i; const q = QUESTIONS[i], st = S.q[q.id];
+  $("qt").textContent = q.title; $("qm").textContent = LEVEL + (LEVEL === 1 ? " point" : " points");
+  $("qx").textContent = q.text;
+  $("qh").innerHTML = q.fn ? "Write the function above <code>main</code>, then call it inside <code>main</code>." : "Write all your code inside <code>main</code>. If you need a function, write it above <code>main</code>.";
+  $("code").value = st.code; $("rn").textContent = st.attempts; $("tm").textContent = fmt(st.secs);
+  $("res").className = "card res"; $("res").innerHTML = '<h3>Results</h3><p class="meta">Press Run tests (or Ctrl+Enter).</p>';
+  $("prev").disabled = i === 0; $("next").disabled = i === QUESTIONS.length - 1;
+  $("chips").innerHTML = "";
+  QUESTIONS.forEach((x, k) => { const b = document.createElement("button"); b.type = "button"; b.textContent = k + 1; b.className = "chip" + (k === i ? " on" : "") + (S.q[x.id].solved ? " ok" : ""); b.addEventListener("click", () => show(k)); $("chips").appendChild(b); });
+  syncFx();
+}
+$("next").addEventListener("click", () => show(cur + 1));
+$("prev").addEventListener("click", () => show(cur - 1));
+$("reset").addEventListener("click", () => { $("code").value = STARTER; S.q[QUESTIONS[cur].id].code = STARTER; save(); });
+
+/* ===== RUN ===== */
+const b64 = (t) => { const u = new TextEncoder().encode(t); let r = ""; for (let i = 0; i < u.length; i++) r += String.fromCharCode(u[i]); return btoa(r); };
+const unb64 = (t) => (t ? new TextDecoder().decode(Uint8Array.from(atob(t), (c) => c.charCodeAt(0))) : "");
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+async function judge(src, stdin) {
+  const h = { "Content-Type": "application/json" }; if (CONFIG.token) h["X-Auth-Token"] = CONFIG.token;
+  const body = JSON.stringify({ source_code: b64(src), language_id: CONFIG.lang, stdin: b64(stdin || "\n"), cpu_time_limit: 2 });
+  for (let tries = 0; ; tries++) {
+    try {
+      // base64 matters: compiler error messages contain curly quotes, and plain text mode makes the server answer with an error
+      const r = await fetch(CONFIG.url + "/submissions?base64_encoded=true&wait=true", { method: "POST", headers: h, body });
+      if (r.status === 429 || r.status >= 500) throw new Error("BUSY");
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      const j = await r.json();
+      return { status: j.status, stdout: unb64(j.stdout), compile_output: unb64(j.compile_output) };
+    } catch (e) {
+      if (/^HTTP/.test(e.message) || tries >= 2) throw e;
+      await sleep(1200 * (tries + 1));
+    }
+  }
+}
+function msg(html) { $("res").className = "card res"; $("res").innerHTML = "<h3>Results</h3>" + html; }
+async function runTests() {
+  if (cooling || overlayOn || finished) return;
+  const q = QUESTIONS[cur], st = S.q[q.id], code = $("code").value; st.code = code;
+  if (code.trim().length < 20) return msg('<div class="box">Write your code first.</div>');
+  if (q.fn && !hasFn(code, q.fn)) return msg('<div class="box">Your program must define a function named <code>' + q.fn + "</code>.</div>");
+  if (!S.timeUp) { st.attempts++; $("rn").textContent = st.attempts; save(); }
+  $("run").disabled = true; $("run").textContent = "Running…"; msg('<p class="meta">Compiling and running…</p>');
+  try {
+    const rs = await Promise.all(q.tests.map((t) => judge(code, t.stdin)));
+    const bad = rs.find((r) => r.status && r.status.id !== 3);
+    if (bad) {
+      const id = bad.status.id;
+      if (id === 6) msg('<div class="box"><strong>Your code did not compile.</strong></div><pre>' + esc((bad.compile_output || "").replace(/prog\.c|main\.c/g, "your code")) + "</pre>");
+      else if (id === 5) msg('<div class="box">Time limit exceeded. Check for a loop that never ends.</div>');
+      else if (id >= 7 && id <= 12) msg('<div class="box">Your program crashed while running. Check your code.</div>');
+      else msg('<div class="box">The code runner had a problem. Wait a few seconds and run again.</div>');
+    } else {
+      const rows = q.tests.map((t, i) => { const got = tokens(rs[i].stdout || "", q.words), ok = [t.expected].concat(t.alt || []).some((e) => JSON.stringify(got) === JSON.stringify(e)); return { t, ok, out: (rs[i].stdout || "").replace(/\s+$/, "") }; });
+      const all = rows.every((r) => r.ok), n = rows.filter((r) => r.ok).length;
+      let note = ""; const first = all && !st.solved && !S.timeUp;
+      if (first) { st.solved = true; note = " +" + LEVEL + (LEVEL === 1 ? " point!" : " points!"); } else if (all && S.timeUp && !st.solved) note = " Practice only, no points added.";
+      msg((all ? BANNER : "") + '<p><strong>' + n + " of " + rows.length + " tests passed." + note + "</strong></p><table><thead><tr><th>Test</th><th>Your output</th><th>Result</th></tr></thead><tbody>" +
+        rows.map((r, i) => '<tr><td>' + (i + 1) + (r.t.stdin && r.t.stdin.trim() ? '<div class="meta">input: ' + esc(r.t.stdin.trim().replace(/\s+/g, " ")) + "</div>" : "") + '</td><td class="m">' + fmtOut(r.out) + '</td><td><span class="b ' + (r.ok ? "p" : "f") + '">' + (r.ok ? "Pass" : "Fail") + "</span></td></tr>").join("") + "</tbody></table>" +
+        (all ? "" : '<p class="meta">Check your output against the question. Extra spaces and prompts are fine, but the numbers and words must be right.</p>'));
+      updatePts(); show2(); if (all) celebrate(first);
+      if (all && !summaryShown && QUESTIONS.every((x) => S.q[x.id].solved)) { summaryShown = true; clearTimeout(sumTimer); sumTimer = setTimeout(openSummary, 1700); }
+    }
+  } catch (e) {
+    msg('<div class="box">' + (e.message === "BUSY" ? "The code runner is busy. Wait about 10 seconds, then press Run tests again." : /^HTTP/.test(e.message) ? "The code runner returned an error (" + e.message + "). Press Run tests again, and tell your teacher if it keeps happening." : "Could not reach the code runner. Check your internet and try again.") + "</div>");
+  }
+  $("run").textContent = "Run tests"; cool();
+}
+function show2() { document.querySelectorAll(".chip")[cur].classList.toggle("ok", S.q[QUESTIONS[cur].id].solved); }
+function cool() { cooling = true; let n = CONFIG.cooldown; const b = $("run"); b.disabled = true; (function t() { if (n <= 0) { cooling = false; b.disabled = false; b.textContent = "Run tests"; return; } b.textContent = "Run again in " + n-- + "s"; setTimeout(t, 1000); })(); }
+$("run").addEventListener("click", runTests);
+
+
+/* ===== CELEBRATION (shown every time all tests pass) ===== */
+const REDUCED = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
+const TICK = '<svg class="tick" viewBox="0 0 52 52" aria-hidden="true"><circle class="tick-c" cx="26" cy="26" r="23"/><path class="tick-p" d="M15 27l8 8 14-16"/></svg>';
+const BANNER = '<div class="win-banner">' + TICK + '<div><strong>Correct!</strong><span>All tests passed</span></div></div>';
+const retrigger = (el, c) => { el.classList.remove(c); void el.offsetWidth; el.classList.add(c); };
+function celebrate(first) {
+  retrigger($("res"), "win"); retrigger($("ptsBox"), "bump");
+  const chip = document.querySelectorAll(".chip")[cur]; if (chip) retrigger(chip, "pop");
+  const t = $("toast");
+  t.innerHTML = TICK + "<span>Correct!" + (first ? " +" + LEVEL + (LEVEL === 1 ? " point" : " points") : S.timeUp ? " Practice only" : " Nice work") + "</span>";
+  t.classList.add("show"); clearTimeout(celebrate.t); celebrate.t = setTimeout(() => t.classList.remove("show"), 2400);
+  syncFx();
+}
+let fxTimer = 0;
+function syncFx() {
+  clearInterval(fxTimer); fxTimer = 0; $("fx").innerHTML = "";
+  if (REDUCED || !S || !S.q[QUESTIONS[cur].id].solved) return;
+  confetti(); fxTimer = setInterval(() => { if (!document.hidden) confetti(); }, 800);
+}
+function confetti() {
+  const fx = $("fx"), r = $("run").getBoundingClientRect(), ox = r.left + r.width / 2, oy = r.top + r.height / 2;
+  const cols = ["#22c55e", "#f59e0b", "#38bdf8", "#f472b6", "#a78bfa", "#facc15"];
+  for (let i = 0; i < 26; i++) {
+    const p = document.createElement("i"), a = Math.random() * Math.PI * 2, d = 70 + Math.random() * 150;
+    p.style.cssText = "left:" + ox + "px;top:" + oy + "px;background:" + cols[i % cols.length] + ";--dx:" + Math.cos(a) * d + "px;--dy:" + (Math.sin(a) * d - 60) + "px;--rot:" + (Math.random() * 720 - 360) + "deg;animation-delay:" + Math.random() * 80 + "ms";
+    fx.appendChild(p); setTimeout(() => p.remove(), 1400);
+  }
+}
+
+/* ===== BRAIN BREAK (subway.gif) ===== */
+$("loopTg").addEventListener("click", () => { const off = $("loopBox").classList.toggle("off"); $("loopTg").textContent = off ? "Show" : "Hide"; });
+
+/* ===== EDITOR: Tab, Ctrl+Enter, no outside paste ===== */
+const ta = $("code");
+ta.addEventListener("keydown", (e) => {
+  if (e.key === "Tab") { e.preventDefault(); const s = ta.selectionStart; ta.value = ta.value.slice(0, s) + "    " + ta.value.slice(ta.selectionEnd); ta.selectionStart = ta.selectionEnd = s + 4; }
+  else if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); runTests(); }
+});
+ta.addEventListener("copy", () => { lastCopied = ta.value.slice(ta.selectionStart, ta.selectionEnd); });
+ta.addEventListener("cut", () => { lastCopied = ta.value.slice(ta.selectionStart, ta.selectionEnd); });
+ta.addEventListener("paste", (e) => { const t = (e.clipboardData || window.clipboardData).getData("text"); if (!ALLOW_PASTE && (lastCopied === null || t !== lastCopied)) { e.preventDefault(); flash(); } });
+ta.addEventListener("drop", (e) => { if (!ALLOW_PASTE) e.preventDefault(); });
+let saveT = 0;
+ta.addEventListener("input", () => { S.q[QUESTIONS[cur].id].code = ta.value; clearTimeout(saveT); saveT = setTimeout(save, 300); });
+function saveNow() { if (S && shown) { S.q[QUESTIONS[cur].id].code = ta.value; save(); } }
+window.addEventListener("pagehide", saveNow);
+document.addEventListener("visibilitychange", () => { if (document.hidden) saveNow(); });
+window.addEventListener("beforeunload", (e) => { saveNow(); if (running && !finished && S && !S.timeUp) { e.preventDefault(); e.returnValue = ""; } });
+function flash() { $("res").innerHTML = '<h3>Results</h3><div class="box">Pasting from outside is not allowed.</div>'; }
+document.addEventListener("copy", (e) => { if (e.target !== ta) e.preventDefault(); });
+
+/* ===== FULL SCREEN AND FOCUS GUARD ===== */
+function guard(title, p) {
+  if (!running || finished || overlayOn || (S && S.timeUp)) return;
+  overlayOn = true; S.warnings++; updatePts();
+  $("ovT").textContent = title; $("ovP").textContent = p; $("ov").style.display = "flex";
+}
+$("ovB").addEventListener("click", async () => {
+  if (fsOK) { try { await document.documentElement.requestFullscreen(); } catch (e) {} }
+  if (!fsOK || document.fullscreenElement) { overlayOn = false; $("ov").style.display = "none"; ta.focus(); }
+});
+document.addEventListener("fullscreenchange", () => { if (fsOK && running && !finished && !document.fullscreenElement) guard("You left full screen", "Return to full screen to continue. This was counted as a warning and your teacher can see it."); });
+document.addEventListener("visibilitychange", () => { if (document.hidden) guard("You switched tabs", "Stay on this page. This was counted as a warning."); });
+window.addEventListener("blur", () => setTimeout(() => { if (!document.hasFocus()) guard("The quiz lost focus", "Stay on this page. This was counted as a warning."); }, 300));
+document.addEventListener("fullscreenchange", () => { if (document.fullscreenElement && overlayOn) { overlayOn = false; $("ov").style.display = "none"; } });
+
+/* ===== TIMER (counts only while the question is on screen and no warning is showing) ===== */
+let tick = 0;
+setInterval(() => {
+  if (!running || finished || overlayOn || document.hidden || S.timeUp) return;
+  const st = S.q[QUESTIONS[cur].id]; st.secs++; $("tm").textContent = fmt(st.secs);
+  if (++tick % 5 === 0) save();
+}, 1000);
+
+function fmtOut(o) {
+  if (!o) return '<span class="meta">(no output)</span>';
+  const lines = o.split("\n"), more = lines.length - 12;
+  return '<pre class="out">' + esc(lines.slice(0, 12).join("\n")) + (more > 0 ? "\n... " + more + " more lines" : "") + "</pre>";
+}
+
+/* ===== COUNTDOWN (wall clock, saved with the quiz so a refresh cannot reset it) ===== */
+function practiceUI() { $("practice").classList.add("on"); const c = $("clockBox"); c.classList.remove("warn", "crit"); c.classList.add("done"); $("clockLbl").textContent = "Time is up"; $("clock").textContent = "0:00"; }
+function endTime() {
+  if (S.timeUp) return;
+  S.q[QUESTIONS[cur].id].code = ta.value; S.final = liveStats(); S.timeUp = true; save();
+  overlayOn = false; $("ov").style.display = "none"; practiceUI();
+  if (!(summaryShown && S.final.done === QUESTIONS.length)) openSummary();
+  summaryShown = true;
+}
+function tickClock() {
+  if (!running || !S) return;
+  if (S.timeUp) return practiceUI();
+  const left = Math.max(0, Math.ceil((S.deadline - Date.now()) / 1000)), c = $("clockBox");
+  $("clock").textContent = fmt(left); c.classList.toggle("warn", left <= 300 && left > 60); c.classList.toggle("crit", left <= 60);
+  if (left === 0) endTime();
+}
+setInterval(tickClock, 500);
+
+/* ===== FINISH ===== */
+function liveStats() {
+  return { secs: QUESTIONS.reduce((a, q) => a + S.q[q.id].secs, 0), runs: QUESTIONS.reduce((a, q) => a + S.q[q.id].attempts, 0), done: QUESTIONS.filter((q) => S.q[q.id].solved).length, pts: points(), warnings: S.warnings };
+}
+function summary() {
+  const t = S.final || liveStats();
+  const line = S.name + " | Group " + S.group + " | Level " + LEVEL + " | " + t.done + "/" + QUESTIONS.length + " solved | " + t.pts + "/" + MAXPTS + " pts | time " + fmt(t.secs) + " | runs " + t.runs + " | warnings " + t.warnings;
+  return { line, secs: t.secs, runs: t.runs, done: t.done, pts: t.pts, name: S.name, group: S.group, warnings: t.warnings };
+}
+let summaryShown = false, sumTimer = 0;
+function openSummary() {
+  clearTimeout(sumTimer);
+  S.q[QUESTIONS[cur].id].code = ta.value; save();
+  const s = summary(), perfect = s.done === QUESTIONS.length;
+  $("sumCard").classList.toggle("perfect", perfect);
+  $("sumT").textContent = perfect ? "You nailed it!" : S.timeUp ? "Time is up!" : "Your result";
+  $("sumSub").textContent = perfect ? "Every question solved. Outstanding work." : S.timeUp ? "This is your final score. You can keep practicing, but new answers will not count." : "Here is how you are doing so far.";
+  $("sumNote").textContent = S.timeUp ? "Final score locked. Show this screen to your teacher." : "Show this screen to your teacher.";
+  $("sumWho").textContent = s.name + ", Group " + s.group;
+  $("ringMax").textContent = "of " + MAXPTS + " pts";
+  $("sumTiles").innerHTML = [["Solved", s.done + " / " + QUESTIONS.length], ["Total time", fmt(s.secs)], ["Runs", s.runs], ["Warnings", s.warnings]].map((t) => '<div class="tile"><small>' + t[0] + "</small><b>" + t[1] + "</b></div>").join("");
+  $("copy").textContent = "Copy result";
+  $("sum").style.display = "flex";
+  const fg = $("ringFg"), n = $("ringN"); fg.style.transition = "none"; fg.style.strokeDashoffset = 326.73; void fg.getBoundingClientRect(); fg.style.transition = "";
+  requestAnimationFrame(() => { fg.style.strokeDashoffset = 326.73 * (1 - s.pts / MAXPTS); });
+  const t0 = performance.now(); (function step(now) { const k = Math.min(1, (now - t0 - 300) / 1000); n.textContent = Math.round(s.pts * Math.max(0, k)); if (k < 1) requestAnimationFrame(step); })(t0);
+  if (perfect && !REDUCED) { sumBurst(); setTimeout(sumBurst, 500); }
+}
+function sumBurst() {
+  const fx = $("sumFx"), r = $("sumCard").getBoundingClientRect(), ox = r.left + r.width / 2, oy = r.top + 90;
+  const cols = ["#22c55e", "#f59e0b", "#38bdf8", "#f472b6", "#a78bfa", "#facc15"];
+  for (let i = 0; i < 60; i++) {
+    const p = document.createElement("i"), a = Math.random() * Math.PI * 2, d = 120 + Math.random() * 260;
+    p.style.cssText = "left:" + ox + "px;top:" + oy + "px;background:" + cols[i % cols.length] + ";--dx:" + Math.cos(a) * d + "px;--dy:" + (Math.sin(a) * d - 80) + "px;--rot:" + (Math.random() * 720 - 360) + "deg;animation-delay:" + Math.random() * 120 + "ms";
+    fx.appendChild(p); setTimeout(() => p.remove(), 1800);
+  }
+}
+$("fin").addEventListener("click", openSummary);
+$("sumX").addEventListener("click", () => { $("sum").style.display = "none"; $("sumFx").innerHTML = ""; });
+$("copy").addEventListener("click", async () => { try { await navigator.clipboard.writeText(summary().line); $("copy").textContent = "Copied"; } catch (e) { $("copy").textContent = "Copy failed. Show the screen."; } });
+
+/* ===== RESUME AFTER REFRESH ===== */
+(function () {
+  let last = null; try { last = JSON.parse(store.get("olympiad:last:L" + LEVEL)); } catch (e) {}
+  if (!last || !last.name) return;
+  let st = null; try { st = JSON.parse(store.get("olympiad:L" + LEVEL + ":" + String(last.name).toLowerCase() + ":" + last.group)); } catch (e) {}
+  if (!st || !st.q) return;
+  const done = QUESTIONS.filter((q) => st.q[q.id] && st.q[q.id].solved).length;
+  const t = st.timeUp ? "Time is up, practice mode." : st.deadline ? fmt(Math.max(0, Math.ceil((st.deadline - Date.now()) / 1000))) + " left on the clock." : "";
+  $("resumeP").textContent = last.name + ", Group " + last.group + ". " + done + " of " + QUESTIONS.length + " solved. " + t;
+  $("start").style.display = "none"; $("resume").style.display = "block";
+  $("resumeBtn").addEventListener("click", () => { $("ln").value = last.name; $("gp").value = last.group; $("startBtn").click(); $("resume").style.display = "none"; });
+  $("notMe").addEventListener("click", () => { $("resume").style.display = "none"; $("start").style.display = "block"; });
+})();
+</script>
+</body>
+</html>
